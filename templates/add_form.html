@@ -1,0 +1,51 @@
+<form id="addForm" onsubmit="event.preventDefault(); submitAddForm();" enctype="multipart/form-data">
+
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Hari</label>
+      <select name="day" class="form-control" required>
+        <option value="">-- Pilih Hari --</option>
+        <option>Senin</option>
+        <option>Selasa</option>
+        <option>Rabu</option>
+        <option>Kamis</option>
+        <option>Jumat</option>
+        <option>Sabtu</option>
+        <option>Minggu</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Jam</label>
+      <input type="time" class="form-control" name="time" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Keterangan</label>
+      <input type="text" class="form-control" name="label" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Pilih Suara</label>
+      <select name="sound" id="soundSelectAdd" class="form-control">
+        {% for f in sound_files %}
+          <option value="{{ f }}">{{ f }}</option>
+        {% endfor %}
+      </select>
+      <button type="button" id="btnPreviewAdd" class="btn btn-outline-primary mt-1"
+              onclick="previewSound('soundSelectAdd','audioPreviewAdd','btnPreviewAdd','soundUploadAdd')">▶️ Coba</button>
+      <audio id="audioPreviewAdd" hidden></audio>
+    </div>
+
+    <div class="mb-3">
+      <label>Upload Suara Baru</label>
+      <input type="file" id="soundUploadAdd" name="sound_upload" class="form-control" accept=".mp3,.wav">
+      <div class="form-text">Jika upload baru, suara terpilih akan diganti.</div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-success">💾 Simpan</button>
+  </div>
+</form>

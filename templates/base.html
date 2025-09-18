@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ school.nama if school else "Sekolah" }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#dc3545">
+</head>
+<body class="bg-light">
+
+<!-- Toast Notifikasi -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+  <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        ✅ Semua jadwal berhasil direset!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category=='success' else 'info' }} 
+                    alert-dismissible fade show mb-2" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="container py-3">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Script global untuk tombol Play/Stop -->
+<script>
+function previewSound(selectId, audioId, btnId, uploadId) {
+  const select = document.getElementById(selectId);
+  const audio = document.getElementById(audioId);
+  const btn = document.getElementById(btnId);
+  const upload = document.getElementById(uploadId);
+
+  if (!audio || !btn) return;
+
+  if (audio.paused || audio.ended) {
+    if (upload && upload.files.length > 0) {
+      const file = upload.files[0];
+      const url = URL.createObjectURL(file);
+      audio.src = url;
+    } else {
+      audio.src = "/static/sounds/" + select.value;
+    }
+    audio.play();
+    btn.innerText = "⏹️ Stop";
+  } else {
+    audio.pause();
+    audio.currentTime = 0;
+    btn.innerText = "▶️ Coba";
+  }
+
+  audio.onended = () => { btn.innerText = "▶️ Coba"; };
+}
+
+  <!-- Modal Konfirmasi -->
+  <div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="confirmModalBody"></div>
+        <div id="confirmMessage" class="p-2"></div>
+        <div class="modal-footer">
+          <button type="button" id="btnConfirmYes" class="btn btn-danger">Ya</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Form (Tambah/Edit) -->
+  <div class="modal fade" id="formModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="formAction">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="formModalBody"></div>
+          <div id="formMessage" class="p-2"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+<script>
+function toggleSound(id) {
+    var audio = document.getElementById("audio-" + id);
+    var button = document.getElementById("btn-" + id);
+
+    if (!audio || !button) return;
+
+    if (audio.paused) {
+        audio.play();
+        button.innerHTML = "⏹️";
+        button.classList.remove("btn-success");
+        button.classList.add("btn-danger");
+
+        // Stop audio lain
+        document.querySelectorAll("audio").forEach(function(a) {
+            if (a !== audio) {
+                a.pause();
+                a.currentTime = 0;
+                var otherBtn = document.getElementById("btn-" + a.id.split("-")[1]);
+                if (otherBtn) {
+                    otherBtn.innerHTML = "▶️";
+                    otherBtn.classList.remove("btn-danger");
+                    otherBtn.classList.add("btn-success");
+                }
+            }
+        });
+
+        // Reset tombol setelah selesai
+        audio.onended = function() {
+            button.innerHTML = "▶️";
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-success");
+        };
+    } else {
+        audio.pause();
+        audio.currentTime = 0;
+        button.innerHTML = "▶️";
+        button.classList.remove("btn-danger");
+        button.classList.add("btn-success");
+    }
+}
+</script>
+
+  <!-- JS Bootstrap Offline -->
+<script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+  
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("{{ url_for('static', filename='js/service-worker.js') }}")
+    .then(reg => console.log("SW registered", reg.scope))
+    .catch(err => console.log("SW failed", err));
+}
+</script>
+</body>
+</html>

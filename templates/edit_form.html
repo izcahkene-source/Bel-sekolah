@@ -1,0 +1,43 @@
+<form id="editForm" onsubmit="event.preventDefault(); submitEditForm({{ s.id }});" enctype="multipart/form-data">
+
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Hari</label>
+      <input type="text" class="form-control" value="{{ s.day }}" readonly>
+      <input type="hidden" name="day" value="{{ s.day }}">
+    </div>
+
+    <div class="mb-3">
+      <label>Jam</label>
+      <input type="time" class="form-control" name="time" value="{{ s.time }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Keterangan</label>
+      <input type="text" class="form-control" name="label" value="{{ s.label }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Pilih Suara</label>
+      <select name="sound" id="soundSelectEdit{{ s.id }}" class="form-control">
+        {% for f in sound_files %}
+          <option value="{{ f }}" {% if f == s.sound %}selected{% endif %}>{{ f }}</option>
+        {% endfor %}
+      </select>
+      <button type="button" id="btnPreviewEdit{{ s.id }}" class="btn btn-outline-primary mt-1"
+              onclick="previewSound('soundSelectEdit{{ s.id }}','audioPreviewEdit{{ s.id }}','btnPreviewEdit{{ s.id }}','soundUploadEdit{{ s.id }}')">▶️ Coba</button>
+      <audio id="audioPreviewEdit{{ s.id }}" hidden></audio>
+    </div>
+
+    <div class="mb-3">
+      <label>Upload Suara Baru</label>
+      <input type="file" id="soundUploadEdit{{ s.id }}" name="sound_upload" class="form-control" accept=".mp3,.wav">
+      <div class="form-text">Jika upload baru, suara terpilih akan diganti.</div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-warning">💾 Simpan Perubahan</button>
+  </div>
+</form>

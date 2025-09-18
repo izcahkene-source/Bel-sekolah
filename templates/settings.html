@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h3>⚙️ Pengaturan</h3>
+  <hr>
+
+  <!-- Form utama untuk simpan pengaturan -->
+  <form id="settings-form" method="post" action="{{ url_for('settings') }}">
+    <div class="mb-3">
+      <label class="form-label">Nama Sekolah</label>
+      <input type="text" name="nama" value="{{ school.nama }}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Alamat</label>
+      <input type="text" name="alamat" value="{{ school.alamat }}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Kepala Sekolah</label>
+      <input type="text" name="kepala" value="{{ school.kepala }}" class="form-control">
+    </div>
+  </form>
+
+  <!-- Bagian tombol -->
+  <div class="d-flex justify-content-between mt-4">
+    <div>
+      <a href="{{ url_for('schedules_page') }}" class="btn btn-outline-info">📋 Lihat Semua Jadwal</a>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">⬅️ Kembali</a>
+    </div>
+
+    <div class="d-flex gap-2">
+      <!-- Tombol simpan -->
+      <button type="submit" class="btn btn-primary" form="settings-form">💾 Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
